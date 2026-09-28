@@ -8,15 +8,17 @@ Control photos, weather, and ambient metrics completely touch-free using natural
 
 ## 🌟 Key Features
 
-- **Touchless Air Gestures**:
-  - 👋 **Swipe Left / Right**: Next / previous photo in the gallery.
-  - 👌 **Pinch Thumb & Index**: Toggle temperature between Celsius (°C) and Fahrenheit (°F).
-  - ⌨️ **Keyboard Fallback**: `←`, `→` arrow keys and `Space` for testing without a webcam.
-- **In-Browser Computer Vision**: Runs real-time MediaPipe Hand tracking directly in the web browser (laptop, tablet, phone) with an interactive cybernetic HUD skeleton overlay.
+- **Touchless Hand & Finger Air Cursor**:
+  - 👆 **Index Finger Tracking**: Move your hand or index finger in front of the camera to steer an on-screen glowing cybernetic cursor with 60 FPS butter-smooth exponential interpolation.
+  - 🎯 **Hover Detection**: The air cursor magnetically responds when hovering over buttons, cards, and slide controls, displaying interactive focus states.
+  - 👌 **Pinch-to-Click**: Pinch thumb and index finger together to trigger a real virtual click on whatever element is underneath the cursor (toggling temperature, changing slides, toggling camera).
+  - 👋 **Air Swipes**: Natural horizontal hand swipes to quickly page through the gallery.
+  - ⌨️ **Keyboard & Mouse Fallback**: `←`, `→` arrow keys and `Space` key, plus normal mouse click support.
+- **In-Browser Computer Vision**: Runs real-time MediaPipe Hand tracking directly in the web browser (laptop, tablet, phone) with an interactive cybernetic HUD skeleton overlay — no local server installation required.
 - **Full-Stack Cloud Architecture**: Unified FastAPI backend serving the responsive glassmorphic frontend, real-time WebSockets (`/ws`), and weather API (`/api/weather`).
-- **Cross-Display Real-Time Synchronization**: Any gesture performed on one screen broadcasts via WebSockets to all connected mirrors in real time.
-- **Desktop OpenCV Engine (Optional)**: Includes a standalone Python computer vision desktop controller (`backend/motion_engine.py`).
-- **Production-Ready for Render**: Pre-configured with `render.yaml`, `Procfile`, and lightweight `requirements.txt`.
+- **Cross-Display Real-Time Synchronization**: Any gesture or cursor motion performed on one screen broadcasts via WebSockets to all connected mirrors in real time.
+- **Desktop OpenCV Engine (Optional)**: Includes a standalone Python computer vision desktop controller (`motion_engine.py` / `backend/motion_engine.py`) with continuous cursor streaming.
+- **Production-Ready for Render**: Pre-configured for both **Render Static Sites** and **Render Web Services** (`render.yaml`, `Procfile`, `requirements.txt`).
 
 ---
 

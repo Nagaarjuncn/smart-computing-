@@ -117,14 +117,17 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"WebSocket client disconnected. Total: {len(connected_clients)}")
 
 
-# Mount static files from frontend directory
+# Mount static files from frontend directory or repository root
 frontend_dir = os.path.join(os.path.dirname(__file__), "frontend")
-if os.path.exists(frontend_dir):
+if not os.path.exists(os.path.join(frontend_dir, "index.html")):
+    frontend_dir = os.path.dirname(__file__)
+
+if os.path.exists(os.path.join(frontend_dir, "index.html")):
     app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 else:
     @app.get("/")
     def index():
-        return HTMLResponse("<h1>Frontend directory not found</h1>", status_code=404)
+        return HTMLResponse("<h1>index.html not found</h1>", status_code=404)
 
 
 if __name__ == "__main__":
