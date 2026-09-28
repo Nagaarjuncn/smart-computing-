@@ -5,27 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Touchless Mirror — Smart Computer Interface</title>
-    <meta name="description" content="A full-stack, gesture and air-cursor controlled smart computing mirror interface with computer vision.">
+    <meta name="description" content="A full-stack, touchless gesture and actual system mouse cursor controlled smart computing mirror interface.">
     <!-- Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
-    <!-- MediaPipe Hands & Camera Utils for In-Browser Touchless Vision -->
+    <!-- MediaPipe Hands & Camera Utils for In-Browser Vision -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <!-- Virtual Touchless Air Cursor -->
-    <div id="air-cursor" class="air-cursor hidden" aria-hidden="true">
-        <div class="cursor-glow"></div>
-        <div class="cursor-ring"></div>
-        <div class="cursor-point"></div>
-        <div class="cursor-label" id="cursor-label">Interactive</div>
-    </div>
-
     <!-- Ambient glowing backdrop elements -->
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
@@ -43,16 +35,16 @@
             <div class="gesture-announcer" id="gesture-announcer">
                 <span class="pulse-ring"></span>
                 <span class="gesture-icon" id="gesture-icon">✨</span>
-                <span class="gesture-text" id="gesture">Air Cursor Ready</span>
+                <span class="gesture-text" id="gesture">System Mouse Ready</span>
             </div>
 
             <!-- System controls & connection status -->
             <div class="header-actions">
-                <div id="status" class="status-pill" data-state="off" role="status">
+                <div id="status" class="status-pill" data-state="standby" role="status">
                     <span class="status-indicator"></span>
-                    <span id="status-text">Connecting...</span>
+                    <span id="status-text">System Cursor Ready</span>
                 </div>
-                <button id="cam-toggle-btn" class="cam-btn" type="button" title="Toggle Webcam Sensor & Air Cursor">
+                <button id="cam-toggle-btn" class="cam-btn" type="button" title="Toggle Webcam Sensor">
                     <span class="cam-icon">📷</span>
                     <span id="cam-btn-text">Enable Camera</span>
                 </button>
@@ -99,8 +91,8 @@
                     <div class="gallery-footer">
                         <nav class="dots" id="dots" aria-label="Slides"></nav>
                         <div class="hint-pill">
-                            <span class="hint-icon">👆</span>
-                            <span>Move finger to point &bull; Pinch to click &bull; Swipe to browse</span>
+                            <span class="hint-icon">🖱️</span>
+                            <span>Operate real system cursor with index finger &bull; Pinch to click</span>
                         </div>
                     </div>
                 </div>
@@ -120,7 +112,7 @@
 
                     <p class="condition" id="condition">Partly cloudy</p>
 
-                    <button id="unit" class="temp-toggle-btn" type="button" aria-live="polite" title="Pinch with finger or Click to toggle °C / °F">
+                    <button id="unit" class="temp-toggle-btn" type="button" aria-live="polite" title="Click or Pinch to toggle °C / °F">
                         <span id="temp">24</span><sup id="deg">°C</sup>
                     </button>
 
@@ -134,37 +126,37 @@
                             <span class="metric-val" id="wind">14 km/h</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">AIR CURSOR</span>
-                            <span class="metric-val toggle-hint" id="cursor-status-hint">Point & Pinch</span>
+                            <span class="metric-label">SYSTEM MOUSE</span>
+                            <span class="metric-val toggle-hint" id="cursor-status-hint">Active</span>
                         </div>
                     </div>
 
                     <ul id="forecast" class="forecast-list"></ul>
                 </div>
 
-                <!-- Touchless Gesture & Air Cursor Guide Card -->
+                <!-- Touchless Gesture & Real Mouse Guide Card -->
                 <div class="card guide-card">
-                    <h3 class="guide-title">Touchless Hand & Finger Controls</h3>
+                    <h3 class="guide-title">System Mouse & Touchless Controls</h3>
                     <div class="gesture-guide-grid">
                         <div class="guide-chip">
-                            <span class="chip-icon">👆</span>
+                            <span class="chip-icon">🖱️</span>
                             <div class="chip-text">
-                                <strong>Move Hand / Index</strong>
-                                <small>Operate on-screen air cursor</small>
+                                <strong>Real OS Mouse</strong>
+                                <small>Hand movement guides Windows cursor</small>
                             </div>
                         </div>
                         <div class="guide-chip">
                             <span class="chip-icon">👌</span>
                             <div class="chip-text">
                                 <strong>Pinch Thumb & Index</strong>
-                                <small>Click any hovered element</small>
+                                <small>Physical left-click on your PC</small>
                             </div>
                         </div>
                         <div class="guide-chip">
                             <span class="chip-icon">👋</span>
                             <div class="chip-text">
-                                <strong>Swipe in Air</strong>
-                                <small>Fast switch gallery slides</small>
+                                <strong>Air Swipes</strong>
+                                <small>Browse gallery photos instantly</small>
                             </div>
                         </div>
                         <div class="guide-chip">
@@ -181,7 +173,7 @@
                 <div class="card camera-hud" id="camera-hud">
                     <div class="camera-hud-header">
                         <span class="hud-label">
-                            <span class="hud-dot"></span> AIR SENSOR HUD
+                            <span class="hud-dot"></span> SENSOR FEED
                         </span>
                         <span id="fps-label" class="hud-fps">STANDBY</span>
                     </div>
@@ -190,18 +182,18 @@
                         <canvas id="output-canvas" class="output-canvas"></canvas>
                         <div id="cam-placeholder" class="cam-placeholder">
                             <span>📷</span>
-                            <p>Camera Sensor Offline</p>
-                            <small>Click "Enable Camera" to operate cursor with hand</small>
+                            <p>Webcam Sensor Standby</p>
+                            <small>Run motion_engine.py for OS mouse, or enable web camera</small>
                         </div>
                     </div>
                 </div>
             </aside>
         </main>
 
-        <!-- Footer Bar with Keyboard Fallback Info -->
+        <!-- Footer Bar with Status Info -->
         <footer class="app-footer">
-            <span class="footer-hint">💡 <strong>Operating mode:</strong> Point index finger to guide cursor &bull; Pinch thumb & index to click &bull; Swipes supported</span>
-            <span class="server-badge" id="server-badge">Full-Stack Cloud Ready</span>
+            <span class="footer-hint">💡 <strong>System Control:</strong> Run <code>python motion_engine.py</code> to control your real Windows mouse cursor with your hand.</span>
+            <span class="server-badge" id="server-badge">System Cursor Ready</span>
         </footer>
     </div>
 

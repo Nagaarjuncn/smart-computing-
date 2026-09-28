@@ -234,7 +234,7 @@ function dispatchGesture(action) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         try {
             socket.send(action);
-        } catch (_) {}
+        } catch (_) { }
     }
 }
 
@@ -244,7 +244,7 @@ let reconnectTimer = null;
 
 function connectWebSocket() {
     if (socket) {
-        try { socket.close(); } catch (_) {}
+        try { socket.close(); } catch (_) { }
     }
 
     try {
@@ -596,7 +596,7 @@ function stopCameraSensor() {
     if (airCursorEl) airCursorEl.classList.add("hidden");
 
     if (cameraInstance) {
-        try { cameraInstance.stop(); } catch (_) {}
+        try { cameraInstance.stop(); } catch (_) { }
     }
 
     if (videoEl && videoEl.srcObject) {

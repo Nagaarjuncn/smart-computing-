@@ -42,7 +42,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    user-select: none;
+    cursor: default;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -72,131 +72,7 @@ body {
     background: radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent 70%);
 }
 
-/* =========================================
-   Virtual Touchless Air Cursor
-   ========================================= */
-.air-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 36px;
-    height: 36px;
-    margin-top: -18px;
-    margin-left: -18px;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate3d(var(--cursor-x, -100px), var(--cursor-y, -100px), 0);
-    transition: opacity 0.25s ease, transform 0.035s linear;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    will-change: transform;
-}
-
-.air-cursor.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.cursor-glow {
-    position: absolute;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 70%);
-    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.cursor-ring {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    box-shadow: 0 0 14px var(--accent), inset 0 0 8px rgba(56, 189, 248, 0.35);
-    transition: all 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.cursor-point {
-    position: absolute;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 10px #ffffff;
-    transition: all 0.16s ease;
-}
-
-.cursor-label {
-    position: absolute;
-    top: 36px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    background: rgba(15, 23, 42, 0.88);
-    border: 1px solid var(--border-glow);
-    padding: 0.2rem 0.55rem;
-    border-radius: var(--radius-full);
-    color: var(--accent);
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.18s ease;
-}
-
-/* Hover state on interactive elements */
-.air-cursor.hovering .cursor-ring {
-    width: 48px;
-    height: 48px;
-    border-color: var(--emerald);
-    box-shadow: 0 0 20px rgba(52, 211, 153, 0.7);
-    border-width: 2.5px;
-}
-
-.air-cursor.hovering .cursor-glow {
-    width: 72px;
-    height: 72px;
-    background: radial-gradient(circle, rgba(52, 211, 153, 0.45), transparent 70%);
-}
-
-.air-cursor.hovering .cursor-point {
-    background: var(--emerald);
-    box-shadow: 0 0 12px var(--emerald);
-    transform: scale(1.3);
-}
-
-.air-cursor.hovering .cursor-label {
-    opacity: 1;
-    border-color: rgba(52, 211, 153, 0.5);
-    color: var(--emerald);
-}
-
-/* Pinch / Click state */
-.air-cursor.pinching .cursor-ring {
-    width: 16px;
-    height: 16px;
-    border-color: var(--amber);
-    box-shadow: 0 0 24px var(--amber);
-    border-width: 3px;
-    transform: scale(0.8);
-}
-
-.air-cursor.pinching .cursor-point {
-    background: var(--amber);
-    box-shadow: 0 0 16px var(--amber);
-    transform: scale(0.6);
-}
-
-.air-cursor.pinching .cursor-glow {
-    width: 80px;
-    height: 80px;
-    background: radial-gradient(circle, rgba(251, 191, 36, 0.65), transparent 60%);
-}
-
-/* =========================================
-   Root App Shell
-   ========================================= */
+/* Root App Shell */
 .app-container {
     position: relative;
     z-index: 1;
@@ -303,17 +179,18 @@ body {
     font-size: 0.85rem;
     color: var(--text-secondary);
     background: rgba(255, 255, 255, 0.03);
-    padding: 0.4rem 0.8rem;
+    padding: 0.4rem 0.85rem;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-subtle);
+    transition: all 0.3s ease;
 }
 
 .status-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #ef4444;
-    transition: background 0.3s;
+    background: #94a3b8;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
 .status-pill[data-state="on"] .status-indicator {
@@ -322,6 +199,15 @@ body {
 }
 
 .status-pill[data-state="on"] #status-text {
+    color: var(--text-primary);
+}
+
+.status-pill[data-state="live"] .status-indicator {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.status-pill[data-state="live"] #status-text {
     color: var(--text-primary);
 }
 
@@ -409,6 +295,10 @@ body {
     cursor: pointer;
 }
 
+.slide:hover {
+    filter: brightness(1.05);
+}
+
 .slide::after {
     content: '';
     position: absolute;
@@ -487,7 +377,8 @@ body {
 }
 
 .dots i:hover {
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.4);
+    transform: scaleY(1.3);
 }
 
 .dots i.on {
@@ -552,10 +443,12 @@ body {
     font-family: var(--font-heading);
     line-height: 0.85;
     transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: inline-block;
 }
 
 .temp-toggle-btn:hover {
-    transform: scale(1.02);
+    transform: scale(1.03);
+    color: var(--accent);
 }
 
 .temp-toggle-btn.pressed {
@@ -792,10 +685,10 @@ body {
 /* Click Ripple Effect */
 .ripple {
     position: fixed;
-    width: 16px;
-    height: 16px;
-    margin-top: -8px;
-    margin-left: -8px;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    margin-left: -12px;
     border: 3px solid var(--accent);
     border-radius: 50%;
     pointer-events: none;
@@ -805,7 +698,7 @@ body {
 
 @keyframes ripple {
     to {
-        transform: scale(28);
+        transform: scale(24);
         opacity: 0;
     }
 }
