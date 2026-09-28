@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touchless Mirror — Smart Computer Interface</title>
+    <meta name="description" content="A full-stack, gesture-controlled smart computing mirror interface with computer vision.">
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- MediaPipe Hands & Camera Utils for In-Browser Touchless Vision -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- Ambient glowing backdrop elements -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <div class="app-container">
+        <!-- Top Navigation / Status Header -->
+        <header class="app-header">
+            <div class="brand-zone">
+                <span class="system-badge">TOUCHLESS OS</span>
+                <time id="clock" class="digital-clock" aria-label="Current time">00:00</time>
+                <span id="date-label" class="date-label">Today</span>
+            </div>
+
+            <!-- Central Live Gesture Announcer -->
+            <div class="gesture-announcer" id="gesture-announcer">
+                <span class="pulse-ring"></span>
+                <span class="gesture-icon" id="gesture-icon">✨</span>
+                <span class="gesture-text" id="gesture">Ready for Gestures</span>
+            </div>
+
+            <!-- System controls & connection status -->
+            <div class="header-actions">
+                <div id="status" class="status-pill" data-state="off" role="status">
+                    <span class="status-indicator"></span>
+                    <span id="status-text">Connecting...</span>
+                </div>
+                <button id="cam-toggle-btn" class="cam-btn" type="button" title="Toggle Webcam Sensor">
+                    <span class="cam-icon">📷</span>
+                    <span id="cam-btn-text">Enable Camera</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <main class="main-grid">
+            <!-- Left Panel: Interactive Visual Gallery -->
+            <section id="gallery" class="panel gallery-panel" aria-label="Photo gallery">
+                <div class="gallery-wrapper">
+                    <div class="track" id="track">
+                        <figure class="slide s1">
+                            <div class="slide-content">
+                                <span class="slide-tag">LANDSCAPE</span>
+                                <figcaption>Ridge at First Light</figcaption>
+                                <p class="slide-sub">High alpine ridge bathed in dawn golden hour</p>
+                            </div>
+                        </figure>
+                        <figure class="slide s2">
+                            <div class="slide-content">
+                                <span class="slide-tag">COASTAL</span>
+                                <figcaption>Harbour at Low Tide</figcaption>
+                                <p class="slide-sub">Calm morning waters reflecting emerald tides</p>
+                            </div>
+                        </figure>
+                        <figure class="slide s3">
+                            <div class="slide-content">
+                                <span class="slide-tag">TERRAIN</span>
+                                <figcaption>Desert After Rain</figcaption>
+                                <p class="slide-sub">Rare desert blossom across vast canyon sands</p>
+                            </div>
+                        </figure>
+                        <figure class="slide s4">
+                            <div class="slide-content">
+                                <span class="slide-tag">NIGHTSCAPE</span>
+                                <figcaption>Midnight Celestial</figcaption>
+                                <p class="slide-sub">Deep galaxy horizon over tranquil mountains</p>
+                            </div>
+                        </figure>
+                    </div>
+
+                    <!-- Slide Navigation Dots & Hint -->
+                    <div class="gallery-footer">
+                        <nav class="dots" id="dots" aria-label="Slides"></nav>
+                        <div class="hint-pill">
+                            <span class="hint-icon">👋</span>
+                            <span>Swipe left / right in air to switch</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Weather & Ambient Sensor HUD -->
+            <aside class="panel ambient-panel" aria-label="Ambient Dashboard">
+                <!-- Weather Widget -->
+                <div class="card weather-card" id="weather">
+                    <div class="card-header">
+                        <div>
+                            <span class="card-tag">LOCAL METRICS</span>
+                            <h2 class="city-name" id="city-name">San Francisco</h2>
+                        </div>
+                        <span class="weather-icon-badge" id="weather-badge">⛅</span>
+                    </div>
+
+                    <p class="condition" id="condition">Partly cloudy</p>
+
+                    <button id="unit" class="temp-toggle-btn" type="button" aria-live="polite" title="Click or Pinch in air to toggle °C / °F">
+                        <span id="temp">24</span><sup id="deg">°C</sup>
+                    </button>
+
+                    <div class="metrics-row">
+                        <div class="metric-item">
+                            <span class="metric-label">HUMIDITY</span>
+                            <span class="metric-val" id="humidity">62%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">WIND</span>
+                            <span class="metric-val" id="wind">14 km/h</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">UNIT</span>
+                            <span class="metric-val toggle-hint">Pinch to switch</span>
+                        </div>
+                    </div>
+
+                    <ul id="forecast" class="forecast-list"></ul>
+                </div>
+
+                <!-- Touchless Gesture Guide Card -->
+                <div class="card guide-card">
+                    <h3 class="guide-title">Touchless Controls</h3>
+                    <div class="gesture-guide-grid">
+                        <div class="guide-chip">
+                            <span class="chip-icon">👋</span>
+                            <div class="chip-text">
+                                <strong>Swipe Left / Right</strong>
+                                <small>Navigate gallery slides</small>
+                            </div>
+                        </div>
+                        <div class="guide-chip">
+                            <span class="chip-icon">👌</span>
+                            <div class="chip-text">
+                                <strong>Pinch Thumb & Index</strong>
+                                <small>Toggle °C / °F temperature</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini Camera Sensor HUD (PiP) -->
+                <div class="card camera-hud" id="camera-hud">
+                    <div class="camera-hud-header">
+                        <span class="hud-label">
+                            <span class="hud-dot"></span> SENSOR FEED
+                        </span>
+                        <span id="fps-label" class="hud-fps">STANDBY</span>
+                    </div>
+                    <div class="camera-stage">
+                        <video id="webcam" class="webcam-feed" playsinline muted></video>
+                        <canvas id="output-canvas" class="output-canvas"></canvas>
+                        <div id="cam-placeholder" class="cam-placeholder">
+                            <span>📷</span>
+                            <p>Camera is off</p>
+                            <small>Click "Enable Camera" above to start air gestures</small>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer Bar with Keyboard Fallback Info -->
+        <footer class="app-footer">
+            <span class="footer-hint">💡 <strong>Keyboard Controls:</strong> <code>←</code> <code>→</code> arrows to browse &bull; <code>Space</code> to pinch &bull; Mouse click anywhere</span>
+            <span class="server-badge" id="server-badge">Full-Stack Cloud Ready</span>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
